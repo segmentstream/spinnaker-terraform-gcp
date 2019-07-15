@@ -1,0 +1,50 @@
+# cloudflare access credentials
+cloudflare_email = ""
+cloudflare_token = ""
+
+# oauth2 gcp credentials
+oauth2_client_id = ""
+oauth2_client_secret = ""
+
+# slack bot credentials
+slack_token = ""
+slack_bot_name = "spinnaker"
+
+# docker registry settings
+docker_registry_address = "eu.gcr.io"
+docker_registry_project = ""
+
+# root domain name for the spinnaker
+domain = "yourdomain.com"
+
+# project where cloudbuild is runnning
+cloudbuild_project = ""
+
+# project where build artifacts will be stored
+gcs_artifacts_project = ""
+
+# spinnaker settings
+spinnaker_version = "1.14.6"
+spinnaker_admin_email = ""
+
+# spinnaker storage settings
+spinnaker_storage_bucket_name = ""
+spinnaker_storage_bucket_location = ""
+
+# spinnaker service account settings
+spinnaker_service_account_name = "spinnaker-service-account@yourdomain.com"
+spinnaker_service_account_roles = ["devops production"]
+
+# setting up spinnaker gke cluster separately from other clusters
+spinnaker_gke_cluster_name = "spinnaker-cluster"
+spinnaker_gke_cluster_project = ""
+spinnaker_gke_cluster_zone = ""
+spinnaker_gke_cluster_read_roles = "devops production"
+spinnaker_gke_cluster_write_roles = "devops production"
+
+# setting up all other spinnaker managed gke clusters
+gke_cluster_names =       ["gke-stage-cluster",             "gke-prod-cluster"]
+gke_cluster_zones =       ["",                              "",               ]
+gke_cluster_projects =    ["",                              "",               ]
+gke_cluster_read_roles =  ["developers,devops production",  "developers,devops production"]
+gke_cluster_write_roles = ["developers,devops production",  "devops production"]
