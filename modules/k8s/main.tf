@@ -1,5 +1,5 @@
 provider "kubernetes" {
-  version = "~> 1.3.0"
+  version = "~> 1.8.1"
 
   host = "${var.gke_endpoint}"
   username = "${var.gke_master_user}"
@@ -13,7 +13,7 @@ provider "kubernetes" {
 }
 
 resource "kubernetes_pod" "fiat_service_account_setup" {
-  count = "${var.phase == 2 ? 1 : 0}"
+  count = "${var.phase == "2" ? 1 : 0}"
 
   metadata {
     name = "fiat-service-account-setup"
@@ -31,25 +31,23 @@ resource "kubernetes_pod" "fiat_service_account_setup" {
         read_only = true
         mount_path = "/scripts"
       }
-      env = [
-        {
-          name = "GET_HOSTS_FROM"
-          value = "dns"
-        }
+      env {
+        name = "GET_HOSTS_FROM"
+        value = "dns"
       }
     }
     volume {
       name = "fiat-service-account-script"
       config_map {
         name = "fiat-service-account-script"
-        default_mode = 0744
+        default_mode = "0744"
       }
     }
   }
 }
 
 data "template_file" "fiat-service-account-script" {
-  count = "${var.phase == 2 ? 1 : 0}"
+  count = "${var.phase == "2" ? 1 : 0}"
 
   template = "${file("${path.module}/fiat-service-account.sh")}"
   vars = {
@@ -59,22 +57,22 @@ data "template_file" "fiat-service-account-script" {
 }
 
 resource "kubernetes_config_map" "fiat_service_account_script" {
-  count = "${var.phase == 2 ? 1 : 0}"
+  count = "${var.phase == "2" ? 1 : 0}"
 
   metadata {
     name = "fiat-service-account-script"
     namespace = "spinnaker"
   }
-  data {
-    fiat-service-account.sh = "${data.template_file.fiat-service-account-script.rendered}"
+  data = {
+    "fiat-service-account.sh" = "${data.template_file.fiat-service-account-script[count.index].rendered}"
   }
 }
 
 resource "kubernetes_service" "spin_deck" {
-  count = "${var.phase == 2 ? 1 : 0}"
+  count = "${var.phase == "2" ? 1 : 0}"
 
   metadata {
-    labels {
+    labels = {
       app = "spin"
       cluster = "spin-deck-public"
     }
@@ -82,7 +80,7 @@ resource "kubernetes_service" "spin_deck" {
     namespace = "spinnaker"
   }
   spec {
-    selector {
+    selector = {
       app = "spin"
       cluster = "spin-deck"
     }
@@ -98,10 +96,10 @@ resource "kubernetes_service" "spin_deck" {
 }
 
 resource "kubernetes_service" "spin_gate" {
-  count = "${var.phase == 2 ? 1 : 0}"
+  count = "${var.phase == "2" ? 1 : 0}"
 
   metadata {
-    labels {
+    labels = {
       app = "spin"
       cluster = "spin-gate-public"
     }
@@ -109,7 +107,7 @@ resource "kubernetes_service" "spin_gate" {
     namespace = "spinnaker"
   }
   spec {
-    selector {
+    selector  = {
       app = "spin"
       cluster = "spin-gate"
     }

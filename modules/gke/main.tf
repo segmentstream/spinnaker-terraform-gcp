@@ -5,9 +5,9 @@ resource "random_string" "user_password" {
 
 resource "google_container_cluster" "primary" {
   name = "${var.gke_cluster_name}"
-  zone = "${var.gke_cluster_zone}"
+  location = "${var.gke_cluster_zone}"
 
-  ip_allocation_policy = {}
+  ip_allocation_policy {}
   enable_legacy_abac = false
 
   addons_config {
