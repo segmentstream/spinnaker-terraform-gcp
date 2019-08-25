@@ -10,6 +10,9 @@ oauth2_client_secret = ""
 slack_token = ""
 slack_bot_name = "spinnaker"
 
+# github access credentials
+github_access_token = ""
+
 # docker registry settings
 docker_registry_address = "eu.gcr.io"
 docker_registry_project = ""

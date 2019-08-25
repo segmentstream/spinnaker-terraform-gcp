@@ -47,3 +47,10 @@ resource "google_project_iam_member" "gcs_artifacts_storage_admin" {
   role = "roles/storage.admin"
   member = "serviceAccount:${google_service_account.spinnaker_service_account.email}"
 }
+
+# run cloudbuild builds
+resource "google_project_iam_member" "cloudbuild" {
+  project = "${var.cloudbuild_project}"
+  role = "roles/cloudbuild.builds.builder"
+  member = "serviceAccount:${google_service_account.spinnaker_service_account.email}"
+}

@@ -15,6 +15,7 @@ module "iam" {
   docker_registry_project = var.docker_registry_project
   gcs_artifacts_project   = var.gcs_artifacts_project
   gke_cluster_projects    = var.gke_cluster_projects
+  cloudbuild_project      = var.cloudbuild_project
 }
 
 module "gke" {
@@ -75,6 +76,7 @@ resource "null_resource" "docker-compose" {
       ADMIN                             = var.spinnaker_admin_email
       OAUTH2_CLIENT_ID                  = var.oauth2_client_id
       OAUTH2_CLIENT_SECRET              = var.oauth2_client_secret
+      GITHUB_ACCESS_TOKEN               = var.github_access_token
       SLACK_TOKEN                       = var.slack_token
       SLACK_BOT_NAME                    = var.slack_bot_name
       DOCKER_REGISTRY_ADDRESS           = var.docker_registry_address

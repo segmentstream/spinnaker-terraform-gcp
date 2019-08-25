@@ -22,6 +22,13 @@ variable "cloudflare_email" {
 variable "cloudflare_token" {
 }
 
+# Github
+
+variable "github_access_token" {
+  
+}
+
+
 # Docker Registry
 
 variable "docker_registry_address" {

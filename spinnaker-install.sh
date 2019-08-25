@@ -1,6 +1,7 @@
 #!/bin/bash
 
 SPINNAKER_KEY_FILE=/home/spinnaker/credentials.json
+TOKEN_FILE=/home/spinnaker/github-access-token.txt
 
 IFS='|' read -r -a gke_cluster_names <<< "$SPINNAKER_GKE_CLUSTER_NAME|$GKE_CLUSTER_NAMES"
 IFS='|' read -r -a gke_cluster_zones <<< "$SPINNAKER_GKE_CLUSTER_ZONE|$GKE_CLUSTER_ZONES"
@@ -60,23 +61,41 @@ hal config storage gcs edit --project $SPINNAKER_GKE_CLUSTER_PROJECT \
   --json-path $SPINNAKER_KEY_FILE
 hal config storage edit --type gcs
 
-# enable artifact support and setup CGS artifacts
+# enable artifact support
 hal config features edit --artifacts true
+
+# setup CGS artifacts
 hal config artifact gcs account add gcs-artifacts-account \
   --json-path $SPINNAKER_KEY_FILE
 hal config artifact gcs enable
 
-# setup cloudbuld integrations
+# setup GitHub artifacts
+echo $GITHUB_ACCESS_TOKEN > $TOKEN_FILE
+hal config artifact github account add github-artifacts-account \
+  --token-file $TOKEN_FILE
+hal config artifact github enable
+
+# setup cloudbuild integrations
+cp /home/spinnaker/igor-local.yml /home/spinnaker/.hal/default/profiles/igor-local.yml
+
+hal config pubsub google enable
+
+hal config ci gcb account add segmentstream-cloudbuild \
+  --project $CLOUDBUILD_PROJECT \
+  --subscription-name cloudBuildSpinnakerIntegration-cloud-builds \
+  --json-key $SPINNAKER_KEY_FILE
+
+hal config ci gcb enable
+
 hal config pubsub google subscription add $CLOUDBUILD_PROJECT-cloud-builds \
   --project $CLOUDBUILD_PROJECT \
   --subscription-name cloudBuildSpinnakerIntegration-cloud-builds \
   --json-path $SPINNAKER_KEY_FILE \
   --message-format GCB
-hal config pubsub google enable
 
 # setup docker registry
 hal config provider docker-registry enable
-hal config provider docker-registry account add docker_registry \
+hal config provider docker-registry account add docker-registry \
  --address $DOCKER_REGISTRY_ADDRESS \
  --cache-interval-seconds 300 \
  --username _json_key \

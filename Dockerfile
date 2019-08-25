@@ -1,4 +1,4 @@
-FROM gcr.io/spinnaker-marketplace/halyard:1.21.0
+FROM gcr.io/spinnaker-marketplace/halyard:1.22.2
 
 # Changing back to rood (as in base image it is "spinnaker")
 USER root
@@ -23,6 +23,9 @@ RUN mv jq /usr/bin/jq
 ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 ADD spinnaker-install.sh /home/spinnaker/spinnaker-install.sh
 ADD secrets/credentials.json /home/spinnaker/credentials.json
+
+# required for cloudbuild setup
+ADD igor-local.yml /home/spinnaker/igor-local.yml
 
 USER spinnaker
 
